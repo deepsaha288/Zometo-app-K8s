@@ -18,6 +18,15 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14'  # or the desired version
+      - name: Install SonarQube Scanner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-11-jre-headless
+          wget -q -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+          sudo unzip -q sonar-scanner.zip -d /opt
+          echo 'export PATH=$PATH:/opt/sonar-scanner-4.8.0.2856-linux/bin' >> ~/.bashrc
+          export PATH=$PATH:/opt/sonar-scanner-4.8.0.2856-linux/bin
+        shell: bash
 
       - name: Building code and analyze with SonarQube
         env:
