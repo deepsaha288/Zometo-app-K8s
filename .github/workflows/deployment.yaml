@@ -54,6 +54,11 @@ jobs:
       - name: Trivy scan Docker image
         run: trivy image deepsaha288/zomato:latest
 
+      - name: Stop and remove existing container
+        run: |
+          docker stop zometo || true
+          docker rm zometo || true
+
       - name: Run Docker container
         run: docker run -d -p 3000:3000 --name zometo deepsaha288/zomato:latest
 
