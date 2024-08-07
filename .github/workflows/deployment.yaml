@@ -9,37 +9,54 @@ jobs:
     name: build
     runs-on: [self-hosted]
     steps:
-      - name: checkout the code
+      - name: Checkout the code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: BUilding code and analyze with SonarQube
-        uses: actions/checkout@master
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # or the desired version
+
+      - name: Building code and analyze with SonarQube
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      - name: dependencies install
+        run: |
+          # Add SonarQube analysis command here
+          echo "Running SonarQube analysis"
+
+      - name: Dependencies install
         run: npm install
-      - name: trivy scan
-        run: trivy -fs . > trivy-report.txt
-      - name: docker build and push
+
+      - name: Trivy scan
+        run: trivy fs --security-checks vuln,config . > trivy-report.txt
+
+      - name: Docker build and push
         run: |
           docker build -t zometo .
           docker tag zometo deepsaha288/zomato:latest
-          docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKERHUB_TOKEN}}
-      - name: trivy scan docker image
-        run:  trivy image deepsaha288/zomato:latest
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker push deepsaha288/zomato:latest
+
+      - name: Trivy scan Docker image
+        run: trivy image deepsaha288/zomato:latest
+
   deploy:
-    name: deploy app to docker
+    name: Deploy app to Docker
     needs: build-analyze-scan
     runs-on: [self-hosted]
     steps:
-      - name: docker pull
+      - name: Docker pull
         run: docker pull deepsaha288/zomato:latest
-      - name: trivy scan docker image
-        run:  trivy image deepsaha288/zomato:latest
-      - name: run docker container 
-        run: docker run itd -p 3000:3000 --name zometo deepsaha288/zomato:latest
+
+      - name: Trivy scan Docker image
+        run: trivy image deepsaha288/zomato:latest
+
+      - name: Run Docker container
+        run: docker run -d -p 3000:3000 --name zometo deepsaha288/zomato:latest
+
 
       # - name: Configure aws credentials
       #   uses: aws-actions/configure-aws-credentials@v1
