@@ -24,8 +24,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
-          # Add SonarQube analysis command here
-          echo "Running SonarQube analysis"
+          sonar-scanner \
+            -Dsonar.projectKey=zometoApp\
+            -Dsonar.sources=. \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       - name: Dependencies install
         run: npm install
