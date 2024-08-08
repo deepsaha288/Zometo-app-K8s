@@ -35,7 +35,7 @@ const Header = () => {
       )}
       <div className="headerContent">
         <img src={Logo} alt="logo" />
-        <h3>Discover the best food & drinks</h3>
+        <h3>Discover the best food & drinks Always</h3>
         <div className="input">
           <select name="" id="">
             <option value="Chennai">Chennai</option>
@@ -43,6 +43,8 @@ const Header = () => {
             <option value="Delhi">Delhi</option>
             <option value="Mumbai">Mumbai</option>
             <option value="Kolkata">Kolkata</option>
+            <option value="Pune">Pune</option>
+            <option value="Bangalore">Bangalore</option>
           </select>
           |
           <input
