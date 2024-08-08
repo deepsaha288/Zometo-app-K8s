@@ -1,0 +1,14 @@
+filebeat.inputs:
+- type: container
+  paths:
+    - /var/lib/docker/containers/*/*.log
+  processors:
+  - add_docker_metadata: ~
+
+output.elasticsearch:
+  hosts: ["http://localhost:9200"] #changes with server ip
+  username: "elastic"
+  password: "changeme"
+
+setup.kibana:
+  host: "http://localhost:5601" #changes with server ip
